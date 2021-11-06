@@ -1,4 +1,4 @@
-from twilio.rest import Client
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -11,7 +11,7 @@ CORS(app)
 account_sid = 'AC320e696ec10b592a64bc614ffcf81c1c'
 auth_token = '7b792eab5b495ae11ed31ba5bea398d8'
 
-client = Client(account_sid, auth_token)
+
 
 params = urllib.parse.urlencode({'bot': 'x1592563667910'})
 headers = {
@@ -29,104 +29,6 @@ def index():
     })
 
 
-@app.route('/sendMessage', methods=['POST'])
-def send_message():
-    if request.method == 'POST':
-        received_data = request.get_json()
-        print(received_data)
-        try:
-            arguments = received_data.get('inArguments')
-            name = str(arguments[2]['Name'])
-            number = '+' + str(arguments[1]['Phone'])
-            message = 'Hi ' + name + ', \n' + str(arguments[0]['Message'])
-
-            if number is None:
-                print('Number not received!')
-                return jsonify({
-                    'success': False,
-                    'error_message': 'Please provide the number!'
-                })
-
-            if arguments is None:
-                print('In Arguments not received!')
-                return jsonify({
-                    'success': False,
-                    'error_message': 'No message attribute received!'
-                })
-
-            response = client.messages.create(to=number, from_='+12053950462', body=message)
-
-        except Exception as e:
-            return jsonify({
-                'success': False,
-                'message': str(e),
-                'error_route': '/sendMessage'
-            })
-
-        return jsonify({
-            'success': True,
-            'message': 'Successfully Executed Action!',
-            'message_id': response.sid,
-            'message_body': response.body,
-            'sent_date': response.date_created,
-            'sent_from': response.from_,
-            'sent_to': response.to,
-            'cost': response.price,
-            'number_of_segments': response.num_segments,
-            'direction': response.direction
-        })
-
-
-@app.route('/sendWhatsappText', methods=['POST'])
-def send_whatsapp_text():
-    if request.method == 'POST':
-        try:
-            received_data = request.get_json()
-
-            print(received_data)
-
-            otp = random.randint(100000, 999999)
-            
-            arguments = received_data.get('inArguments')
-            name = str(arguments[1]['Name'])
-            number = 'whatsapp:+' + str(arguments[0]['Phone'])
-            message = 'Your SFMC Testing pin code is ' + str(otp)
-
-            if number is None:
-                print('Number not received!')
-                return jsonify({
-                    'success': False,
-                    'error_message': 'Please provide the number!'
-                })
-
-            if arguments is None:
-                print('In Arguments not received!')
-                return jsonify({
-                    'success': False,
-                    'error_message': 'No message attribute received!'
-                })
-
-            response = client.messages.create(to=number, from_='whatsapp:+12053950462', body=message)
-
-        except Exception as e:
-            return jsonify({
-                'success': False,
-                'message': str(e),
-                'error_route': '/sendWhatsapp'
-            })
-
-        return jsonify({
-            'success': True,
-            'message': 'Successfully Executed Action!',
-            'message_id': response.sid,
-            'message_body': response.body,
-            'sent_date': response.date_created,
-            'sent_from': response.from_,
-            'sent_to': response.to,
-            'cost': response.price,
-            'number_of_segments': response.num_segments,
-            'direction': response.direction
-        })
 
 
 @app.route('/sfmc/sendWhatsapp', methods=['POST'])

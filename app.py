@@ -245,4 +245,4 @@ def send_whatsapp1():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=9002,debug=True)
+    app.run()
